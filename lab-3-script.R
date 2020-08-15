@@ -17,27 +17,76 @@ colnames(cars) <- c("buyingPrice",
                     "safety",
                     "decision")
 
-rules = apriori(
-  data = cars
-)
 
-inspect(rules)
+####### AUTOS NO ACEPTABLES ##########
 
-
-rules.by.conf<-sort(rules, by="confidence", decreasing=TRUE) 
-inspect(rules.by.conf)
-
-
+# Obtenemos las reglas para autos no aceptables
 rules.unacc<-apriori(cars, 
                      parameter=list(supp=0.001,conf = 0.08), 
                      appearance=list(rhs="decision=unacc")) 
+
+# Se ordena de manera decreciente
 rules.unacc.byconf<-sort(rules.unacc, by="confidence", decreasing=TRUE)
-inspect(rules.unacc.byconf[1:100])
 
+# Regla {Seguridad baja} => {Auto no aceptable}
+inspect(rules.unacc.byconf[1])
 
-rules.vgood<-apriori(cars, parameter=list(supp=0.001,conf = 0.08), 
-                     appearance=list(default="lhs",rhs="decision=vgood"), control=list(verbose=F)) 
+# Regla {Numero de personas = 2} => {Auto no aceptable}
+inspect(rules.unacc.byconf[2])
+
+# Regla {Precio muy alto, Costo mantencion muy alto} => {Auto no aceptable} 
+inspect(rules.unacc.byconf[3])
+
+############ AUTOS ACEPTABLES ######################
+
+# Se obtienen las reglas para autos aceptables
+rules.acc <- apriori(cars, 
+                     parameter=list(supp=0.001,conf = 0.08), 
+                     appearance=list(default="lhs",rhs="decision=acc"), control=list(verbose=F))
+
+# Se ordena por confianza
+rules.acc.byconf<-sort(rules.acc, by="confidence", decreasing=TRUE)
+
+# Se ordena por soporte
+rules.acc.bysupport<-sort(rules.acc, by="support", decreasing=TRUE)
+
+# Se inspeccionan las primeras 15 con mayor confianza
+inspect(rules.acc.byconf[1:15])
+
+# Se inspeccionan las primeras 15 con mayor soporte
+inspect(rules.acc.bysupport[1:15])
+
+############ AUTOS BUENOS #################
+
+# Se obtienen las reglas para autos buenos
+rules.good<-apriori(cars, 
+                     parameter=list(supp=0.001,conf = 0.08), 
+                     appearance=list(default="lhs",rhs="decision=good"), 
+                     control=list(verbose=F))
+
+# Se ordena por confianza
+rules.good.byconf <- sort(rules.good, by="confidence", decreasing=TRUE)
+
+# Se ordena por soporte
+rules.good.bysupport<-sort(rules.good, by="support", decreasing=TRUE)
+
+# Se obtienen las primeras 15 reglas ordenadas por confianza
+inspect(rules.good.byconf[1:15])
+
+# Se obtienen las primeras 15 reglas ordenadas por soporte
+inspect(rules.good.bysupport[1:15])
+
+################ AUTOS MUY BUENOS ######################
+
+# Se obtienen las reglas para autos muy buenos
+rules.vgood<-apriori(cars, 
+                     parameter=list(supp=0.001,conf = 0.08), 
+                     appearance=list(default="lhs",rhs="decision=vgood"), 
+                     control=list(verbose=F)) 
+
+# Se ordenan por confianza
 rules.vgood.byconf<-sort(rules.vgood, by="confidence", decreasing=TRUE)
+
 inspect(rules.vgood.byconf[1:15])
 
 
