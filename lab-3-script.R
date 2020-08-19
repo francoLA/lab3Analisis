@@ -87,7 +87,14 @@ rules.vgood<-apriori(cars,
 # Se ordenan por confianza
 rules.vgood.byconf<-sort(rules.vgood, by="confidence", decreasing=TRUE)
 
+# Se ordena por soporte
+rules.vgood.bysupport<-sort(rules.vgood, by="support", decreasing=TRUE)
+
+# Se obtienen las primeras 15 reglas ordenadas por confianza
 inspect(rules.vgood.byconf[1:15])
+
+# Se obtienen las primeras 15 reglas ordenadas por soporte
+inspect(rules.vgood.bysupport[1:15])
 
 
 
